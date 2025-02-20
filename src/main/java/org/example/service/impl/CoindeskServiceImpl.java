@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import net.logstash.logback.util.StringUtils;
 import org.example.persistence.repository.CurrencyRepository;
 import org.example.service.CoindeskService;
 import org.example.service.client.CoindeskClient;
@@ -29,6 +30,9 @@ public class CoindeskServiceImpl implements CoindeskService {
     public String getEnhancedCoindesk() throws JsonProcessingException {
 
         String coindesk = coindeskClient.getCoindesk();
+        if (StringUtils.isBlank(coindesk)) {
+            throw new RuntimeException("coindesk response is empty");
+        }
         JsonNode rootNode = objectMapper.readTree(coindesk);
         JsonNode bpiNode = rootNode.path("bpi");
 
